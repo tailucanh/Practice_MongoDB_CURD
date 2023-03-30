@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+  <div class="container-fluid pt-4">
+    <div class="d-flex justify-content-center">
+      <h1 style="fs-2 mr-5">Danh sách sản phẩm</h1>
+      <button class="btn btn-primary shadow-sm fs-5 ms-5" data-bs-toggle="modal" data-bs-target="#modalAdd"><i
+          class="fa-solid fa-plus px-2"></i>Thêm sản phẩm</button>
+    </div>
+
+    <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAdd" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Thêm sản phẩm</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="post" action="/">
+            <div class="modal-body">
+              <div class="align-items-center">
+                <div class="row mb-2 align-items-center">
+                  <div class="col-lg-4 col-md-12 col-xs-12">
+                    <label class="col-form-label">Tên sản phẩm:</label>
+                  </div>
+                  <div class="col-lg-8 col-md-12 col-xs-12">
+                    <input type="text" class="form-control" id="name" name="name" required>
+                  </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                  <div class="col-lg-4 col-md-12 col-xs-12">
+                    <label class="col-form-label">Giá:</label>
+                  </div>
+                  <div class="col-lg-8 col-md-12 col-xs-12">
+                    <input type="number" class="form-control" id="price" name="price" required>
+                  </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                  <div class="col-lg-4 col-md-12 col-xs-12">
+                    <label class="col-form-label">Số lượng:</label>
+                  </div>
+                  <div class="col-lg-8 col-md-12 col-xs-12">
+                    <input type="number" class="form-control" id="quantity" name="quantity" required>
+                  </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                  <div class="col-lg-4 col-md-12 col-xs-12">
+                    <label class="col-form-label">Loại sản phẩm:</label>
+                  </div>
+                  <div class="col-lg-8 col-md-12 col-xs-12">
+                    <input type="text" class="form-control" id="type" name="type" required>
+                  </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                  <div class="col-lg-4 col-md-12 col-xs-12">
+                    <label class="col-form-label">Khuyến mại:</label>
+                  </div>
+                  <div class="col-lg-8 col-md-12 col-xs-12">
+                    <input type="number" class="form-control" id="promotion" name="promotion" required>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary" id="saveProduct">Lưu</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row d-flex mt-5 justify-content-center">
+      <div class="col-lg-11">
+        {{#if arrProduct}}
+        <table class="table-light table table-striped table-hover shadow-sm ">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tên sản phẩm</th>
+              <th>Giá sản phẩm</th>
+              <th>Số lượng</th>
+              <th>Loại</th>
+              <th>Khuyến mại</th>
+              <th>Chức năng khác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each arrProduct}}
+            <tr>
+              <td>{{@index}}</td>
+              <td>{{this.name}}</td>
+              <td>{{this.price}}</td>
+              <td>{{this.quantity}}</td>
+              <td>{{this.type}}</td>
+              <td>{{this.promotion}}</td>
+              <td class="d-flex">
+                <button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                  data-id="{{this._id}}" id="btn-delete">Xóa</button>
+                <button type="submit" class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#editModal"
+                  data-id="{{this._id}}" id="btn-update">Sửa</button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        {{else}}
+        <p class="fs-1 mt-5 text-center text-danger">Chưa có dữ liệu</p>
+        {{/if}}
+      </div>
+    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Xóa sản phẩm</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Bạn có chắc chắn muốn xóa sản phẩm này?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="button" class="btn btn-danger" id="deleteProductBtn">Xóa</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Sửa sản phẩm</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="edit-form">
+              <div class="modal-body">
+                <div class="align-items-center">
+                  <div class="row mb-2 align-items-center">
+                    <div class="col-lg-4 col-md-12 col-xs-12">
+                      <label class="col-form-label">Tên sản phẩm:</label>
+                    </div>
+                    <div class="col-lg-8 col-md-12 col-xs-12">
+                      <input type="text" class="form-control" id="edit-name" name="name" required>
+                    </div>
+                  </div>
+                  <div class="row mb-2 align-items-center">
+                    <div class="col-lg-4 col-md-12 col-xs-12">
+                      <label class="col-form-label">Giá:</label>
+                    </div>
+                    <div class="col-lg-8 col-md-12 col-xs-12">
+                      <input type="number" class="form-control" id="edit-price" name="price" required>
+                    </div>
+                  </div>
+                  <div class="row mb-2 align-items-center">
+                    <div class="col-lg-4 col-md-12 col-xs-12">
+                      <label class="col-form-label">Số lượng:</label>
+                    </div>
+                    <div class="col-lg-8 col-md-12 col-xs-12">
+                      <input type="number" class="form-control" id="edit-quantity" name="quantity" required>
+                    </div>
+                  </div>
+                  <div class="row mb-2 align-items-center">
+                    <div class="col-lg-4 col-md-12 col-xs-12">
+                      <label class="col-form-label">Loại sản phẩm:</label>
+                    </div>
+                    <div class="col-lg-8 col-md-12 col-xs-12">
+                      <input type="text" class="form-control" id="edit-type" name="type" required>
+                    </div>
+                  </div>
+                  <div class="row mb-2 align-items-center">
+                    <div class="col-lg-4 col-md-12 col-xs-12">
+                      <label class="col-form-label">Khuyến mại:</label>
+                    </div>
+                    <div class="col-lg-8 col-md-12 col-xs-12">
+                      <input type="number" class="form-control" id="edit-promotion" name="promotion" required>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-primary" id="save-edit-btn">Lưu</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    $(document).ready(function () {
+      $('#exampleModal button.btn-primary').click(function () {
+        $.ajax({
+          type: "POST",
+          url: "/",
+          data: $("#add-product-form").serialize(),
+          success: function () {
+            // Reload page after saving product
+            location.reload();
+          }
+        });
+      });
+
+      $('#deleteProductBtn').click(function () {
+        var productId = $('#btn-delete').data('id');
+        $.ajax({
+          url: '/delete-product/' + productId,
+          type: 'POST',
+          success: function (result) {
+            location.reload();
+          },
+          error: function (err) {
+            console.error(err);
+          }
+        });
+        $('#deleteModal').modal('hide');
+      });
+
+      $('#btn-update').click(function () {
+        const productId = $(this).data("id");
+        $.ajax({
+          url: '/get-product/' + productId,
+          type: 'GET',
+          success: function (product) {
+            $("#edit-name").val(product.name);
+            $("#edit-quantity").val(product.quantity);
+            $("#edit-price").val(product.price);
+            $("#edit-type").val(product.type);
+            $("#edit-promotion").val(product.promotion);
+
+            $("#editModal").modal("show");
+          },
+          error: function (err) {
+            console.error(err);
+          }
+        });
+      });
+
+      $('#save-edit-btn').click(function () {
+        var name = $("#edit-name").val();
+        var quantity = $("#edit-quantity").val();
+        var price = $("#edit-price").val();
+        var type = $("#edit-type").val();
+        var promotion = $("#edit-promotion").val();
+        var data = {
+          name: name,
+          price: price,
+          quantity: quantity,
+          type: type,
+          promotion: promotion,
+        };
+        var productId = $('#btn-update').data('id');
+        $.ajax({
+          url: '/update-product/' + productId,
+          type: 'POST',
+          data: data,
+          success: function (response) {
+            $('#editModal').modal('hide');
+            location.reload();
+          },
+          error: function (error) {
+            console.log(error);
+            alert('Lỗi cập nhật sản phẩm');
+          }
+        });
+      });
+
+    });
+
+
+
+  </script>
+  </script>
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+</body>
+
+</html>
