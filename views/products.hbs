@@ -112,10 +112,13 @@
               <td>{{this.type}}</td>
               <td>{{this.promotion}}</td>
               <td class="d-flex">
-                <button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                  data-id="{{this._id}}" id="btn-delete">Xóa</button>
-                <button type="submit" class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#editModal"
-                  data-id="{{this._id}}" id="btn-update">Sửa</button>
+                <button type="button" class="btn btn-danger  shadow-sm  fs-button" data-bs-toggle="modal"
+                  data-bs-target="#deleteModal" data-id="{{this._id}}" data-name="{{this.name}}">Xóa</button>
+
+                <button type="button" class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#editModal"
+                  data-id="{{this._id}}" data-name="{{this.name}}" data-price="{{this.price}}"
+                  data-quantity="{{this.quantity}}" data-type="{{this.type}}"
+                  data-promotion="{{this.promotion}}">Sửa</button>
               </td>
             </tr>
             {{/each}}
@@ -126,6 +129,7 @@
         {{/if}}
       </div>
     </div>
+
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -134,16 +138,16 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Bạn có chắc chắn muốn xóa sản phẩm này?
+            Bạn có chắc chắn muốn xóa sản phẩm "<span id="productName" class="fw-semibold fst-italic"></span>" này?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-            <button type="button" class="btn btn-danger" id="deleteProductBtn">Xóa</button>
-
+            <a id="delete-link" href="#" class="btn btn-danger  shadow-sm  fs-button">Xóa ngay</a>
           </div>
         </div>
       </div>
     </div>
+
 
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
       aria-hidden="true">
@@ -154,7 +158,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form id="edit-form">
+            <form id="editProductForm" action="/update" method="POST">
               <div class="modal-body">
                 <div class="align-items-center">
                   <div class="row mb-2 align-items-center">
@@ -202,7 +206,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="submit" class="btn btn-primary" id="save-edit-btn">Lưu</button>
+                <button type="submit" class="btn btn-warning  shadow-sm  fs-button">Lưu</button>
               </div>
             </form>
           </div>
@@ -214,6 +218,7 @@
   </div>
   <script>
     $(document).ready(function () {
+
       $('#exampleModal button.btn-primary').click(function () {
         $.ajax({
           type: "POST",
@@ -226,75 +231,61 @@
         });
       });
 
-      $('#deleteProductBtn').click(function () {
-        var productId = $('#btn-delete').data('id');
-        $.ajax({
-          url: '/delete-product/' + productId,
-          type: 'POST',
-          success: function (result) {
-            location.reload();
-          },
-          error: function (err) {
-            console.error(err);
-          }
-        });
-        $('#deleteModal').modal('hide');
+      $('#deleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var productId = button.data('id');
+        var productName = button.data('name');
+        var modal = $(this);
+        modal.find('#productName').text(productName);
+
+        var deleteLink = '/delete/' + productId;
+        $('#delete-link').attr('href', deleteLink);
       });
 
-      $('#btn-update').click(function () {
-        const productId = $(this).data("id");
-        $.ajax({
-          url: '/get-product/' + productId,
-          type: 'GET',
-          success: function (product) {
-            $("#edit-name").val(product.name);
-            $("#edit-quantity").val(product.quantity);
-            $("#edit-price").val(product.price);
-            $("#edit-type").val(product.type);
-            $("#edit-promotion").val(product.promotion);
+      $('#editModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var productId = button.data('id');
+        var name = button.data('name');
+        var price = button.data('price');
+        var quantity = button.data('quantity');
+        var type = button.data('type');
+        var promotion = button.data('promotion');
 
-            $("#editModal").modal("show");
-          },
-          error: function (err) {
-            console.error(err);
-          }
+
+        var modal = $(this);
+        modal.find('#edit-name').val(name);
+        modal.find('#edit-price').val(price);
+        modal.find('#edit-quantity').val(quantity);
+        modal.find('#edit-type').val(type);
+        modal.find('#edit-promotion').val(promotion);
+
+        $('#editProductForm').submit(function (event) {
+          event.preventDefault();
+
+          var productName = $('#edit-name').val();
+          var productPrice = $('#edit-price').val();
+          var productQuantity = $('#edit-quantity').val();
+          var productType = $('#edit-type').val();
+          var productPromotion = $('#edit-promotion').val();
+
+          $.ajax({
+            url: '/update/' + productId,
+            type: 'POST',
+            data: { name: productName, price: productPrice, quantity: productQuantity, type: productType, promotion: productPromotion },
+            success: function (result) {
+              location.reload();
+            },
+            error: function (err) {
+              console.error(err);
+            }
+          });
+          $('#editModal').modal('hide');
         });
       });
-
-      $('#save-edit-btn').click(function () {
-        var name = $("#edit-name").val();
-        var quantity = $("#edit-quantity").val();
-        var price = $("#edit-price").val();
-        var type = $("#edit-type").val();
-        var promotion = $("#edit-promotion").val();
-        var data = {
-          name: name,
-          price: price,
-          quantity: quantity,
-          type: type,
-          promotion: promotion,
-        };
-        var productId = $('#btn-update').data('id');
-        $.ajax({
-          url: '/update-product/' + productId,
-          type: 'POST',
-          data: data,
-          success: function (response) {
-            $('#editModal').modal('hide');
-            location.reload();
-          },
-          error: function (error) {
-            console.log(error);
-            alert('Lỗi cập nhật sản phẩm');
-          }
-        });
-      });
-
     });
 
 
 
-  </script>
   </script>
 
 

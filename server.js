@@ -23,6 +23,7 @@ app.set("view engine", "hbs");
 app.get("/", async (req, res) => {
   await mongoose.connect(uri);
   let arrProduct = await ProductModel.find().lean();
+
   res.render("products", { arrProduct });
 });
 
@@ -41,8 +42,9 @@ app.post("/", async (req, res) => {
     res.status(500).send("Đã có lỗi xảy ra!");
   }
 });
-app.post("/delete-product/:id", async (req, res) => {
+app.get("/delete/:id", async (req, res) => {
   const productId = req.params.id;
+  console.log(productId);
   try {
     const deletedProduct = await ProductModel.findByIdAndDelete(productId);
     if (!deletedProduct) {
@@ -53,22 +55,16 @@ app.post("/delete-product/:id", async (req, res) => {
     res.status(500).send({ error: err.message });
   }
 });
-app.get("/get-product/:id", async (req, res) => {
-  const productId = req.params.id;
-  let product = await ProductModel.findById(productId);
-  console.log(product);
-  res.json(product);
-});
 
-app.post("/update-product/:id", async (req, res) => {
+app.post("/update/:id", async (req, res) => {
   const productId = req.params.id;
   console.log(productId);
-  const product = await ProductModel.findById(productId);
-
+  const product = req.body;
+  console.log(product);
   try {
-    const updateProduct = await ProductModel.findOneAndUpdate(
+    const updateProduct = await ProductModel.findByIdAndUpdate(
+      productId,
       product,
-      req.body,
       {
         new: true,
       }
