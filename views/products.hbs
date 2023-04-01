@@ -17,10 +17,15 @@
 
 <body>
   <div class="container-fluid pt-4">
-    <div class="d-flex justify-content-center">
-      <h1 style="fs-2 mr-5">Danh sách sản phẩm</h1>
-      <button class="btn btn-primary shadow-sm fs-5 ms-5" data-bs-toggle="modal" data-bs-target="#modalAdd"><i
-          class="fa-solid fa-plus px-2"></i>Thêm sản phẩm</button>
+    <div class="row d-flex justify-content-center">
+      <div class="col-lg-6 col-xs-12">
+        <h1 style="fs-2 mr-5" class="text-center">Danh sách sản phẩm</h1>
+      </div>
+      <div class="col-sx-10 col-lg-3 d-flex justify-content-center">
+        <button class="btn btn-primary shadow-sm fs-5 ms-5" data-bs-toggle="modal" data-bs-target="#modalAdd"><i
+            class="fa-solid fa-plus px-2"></i>Thêm sản phẩm</button>
+      </div>
+
     </div>
 
     <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAdd" aria-hidden="true">
@@ -46,7 +51,7 @@
                     <label class="col-form-label">Giá:</label>
                   </div>
                   <div class="col-lg-8 col-md-12 col-xs-12">
-                    <input type="number" class="form-control" id="price" name="price" required>
+                    <input type="number" class="form-control" id="price" name="price" min="0" step="0.1" required>
                   </div>
                 </div>
                 <div class="row mb-2 align-items-center">
@@ -54,7 +59,7 @@
                     <label class="col-form-label">Số lượng:</label>
                   </div>
                   <div class="col-lg-8 col-md-12 col-xs-12">
-                    <input type="number" class="form-control" id="quantity" name="quantity" required>
+                    <input type="number" class="form-control" id="quantity" name="quantity" min="0" step="1" required>
                   </div>
                 </div>
                 <div class="row mb-2 align-items-center">
@@ -90,40 +95,43 @@
     <div class="row d-flex mt-5 justify-content-center">
       <div class="col-lg-11">
         {{#if arrProduct}}
-        <table class="table-light table table-striped table-hover shadow-sm ">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Tên sản phẩm</th>
-              <th>Giá sản phẩm</th>
-              <th>Số lượng</th>
-              <th>Loại</th>
-              <th>Khuyến mại</th>
-              <th>Chức năng khác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each arrProduct}}
-            <tr>
-              <td>{{@index}}</td>
-              <td>{{this.name}}</td>
-              <td>{{this.price}}</td>
-              <td>{{this.quantity}}</td>
-              <td>{{this.type}}</td>
-              <td>{{this.promotion}}</td>
-              <td class="d-flex">
-                <button type="button" class="btn btn-danger  shadow-sm  fs-button" data-bs-toggle="modal"
-                  data-bs-target="#deleteModal" data-id="{{this._id}}" data-name="{{this.name}}">Xóa</button>
+        <div class="table-responsive">
+          <table class="table-light table table-striped table-hover shadow-sm ">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Loại</th>
+                <th>Khuyến mại</th>
+                <th>Chức năng khác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each arrProduct}}
+              <tr>
+                <td>{{@index}}</td>
+                <td>{{this.name}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.quantity}}</td>
+                <td>{{this.type}}</td>
+                <td>{{this.promotion}}%</td>
+                <td class="d-flex">
+                  <button type="button" class="btn btn-danger  shadow-sm  fs-button" data-bs-toggle="modal"
+                    data-bs-target="#deleteModal" data-id="{{this._id}}" data-name="{{this.name}}">Xóa</button>
 
-                <button type="button" class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#editModal"
-                  data-id="{{this._id}}" data-name="{{this.name}}" data-price="{{this.price}}"
-                  data-quantity="{{this.quantity}}" data-type="{{this.type}}"
-                  data-promotion="{{this.promotion}}">Sửa</button>
-              </td>
-            </tr>
-            {{/each}}
-          </tbody>
-        </table>
+                  <button type="button" class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#editModal"
+                    data-id="{{this._id}}" data-name="{{this.name}}" data-price="{{this.price}}"
+                    data-quantity="{{this.quantity}}" data-type="{{this.type}}"
+                    data-promotion="{{this.promotion}}">Sửa</button>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+
         {{else}}
         <p class="fs-1 mt-5 text-center text-danger">Chưa có dữ liệu</p>
         {{/if}}
@@ -206,7 +214,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="submit" class="btn btn-warning  shadow-sm  fs-button">Lưu</button>
+                <button type="submit" class="btn btn-warning  shadow-sm  fs-button">Thêm</button>
               </div>
             </form>
           </div>
